@@ -33,7 +33,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  Posts.add(req.body)
+  Posts.insert(req.body)
     .then( post => {
       res.status(201).json(post)
     })
@@ -46,7 +46,8 @@ router.post('/', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  Posts.remove(req.params.id)
+  Posts
+    .remove(req.params.id)
     .then(count => {
       if (count > 0) {
         res.status(200).json({ message: 'The post has been removed' });
@@ -64,7 +65,8 @@ router.delete('/:id', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const changes = req.body;
-  Posts.update(req.params.id, changes)
+  Posts
+    .update(req.params.id, changes)
     .then( post => {
       if ( post ) {
         res.status(200).json( post )
@@ -76,6 +78,36 @@ router.put('/:id', (req, res) => {
       console.log( err );
       res.status(500).json({
         message: 'Error updating the post.'
+      });
+    });
+});
+
+router.post('/:id/comments', (req, res) => {
+  Posts.insertComment(req.body)
+    .then( post => {
+      res.status(201).json(post)
+    })
+    .catch( err => {
+      console.log( err );
+      res.status(500).json({
+        message: 'Error inserting a comment.'
+      });
+    });
+});
+
+router.get('/:id/comments', (req, res) => {
+  Posts.findCommentById(req.params.id)
+    .then( comments => {
+      if ( comments ) {
+        res.status(200).json(comments);
+      } else {
+        res.status(404).json({ message: `Unable to find comments associated with ID ${req.params.id}` })
+      }
+    })
+    .catch( err => {
+      console.log( err );
+      res.status(500).json({
+        message: 'Error retrieving comments for this post.'
       });
     });
 });
