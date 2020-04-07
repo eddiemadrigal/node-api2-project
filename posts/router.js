@@ -96,7 +96,7 @@ router.post('/:id/comments', (req, res) => {
 });
 
 router.get('/:id/comments', (req, res) => {
-  Posts.findCommentById(req.params.id)
+  Posts.findPostComments(req.params.id)
     .then( comments => {
       if ( comments ) {
         res.status(200).json(comments);
